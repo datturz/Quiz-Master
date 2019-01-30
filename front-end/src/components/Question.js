@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import SweetAlert from 'sweetalert2-react'
 export default class Question extends Component {
     constructor() {
         super()
@@ -8,6 +9,7 @@ export default class Question extends Component {
             question: '',
             answer: '',
             message: '',
+            tes: '',
         }
     }
     componentWillMount() {
@@ -19,27 +21,44 @@ export default class Question extends Component {
                 this.setState({
                     data: respon.data
                 })
-                
+                // console.log(this.state.data)
             })
     }
     checkQuestion = () => {
-        axios.post('http://localhost:3001/check')
-            .then((respon) => {
-                if (respon.data.code === 200 ) {
-                    this.setstate({
-                        message: 'Correct'
+        let arr = ['nol', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh']
+        axios.post('http://localhost:3001/check', {
+            answer: this.state.answer
+        })
+            .then(respon => {
+                if (respon.data.code === 204) {
+                    this.setState({
+                        show: true,
+                        message: `${this.state.answer}  incoreect`
+                    }, () => {
+                        setTimeout((x) => {
+                            this.setState({
+                                show: false,
+                                message: ''
+                            })
+                        })
                     })
-                } else if(respon.data.code === 204) {
-                    this.setstate({
-                        message:  'Incorrect'
+
+                } else if (respon.data.code === 200) {
+                    this.setState({
+                        show: true,
+                        message: `${this.state.answer} correct`
+                    }, () => {
+                        setTimeout((x) => {
+                            this.setState({
+                                show: false,
+                                message: ''
+                            })
+                        })
                     })
                 }
-            })
-            .catch(err=>{
-                console.log(err)
+
             })
     }
-
 
     render() {
         let questions = this.state.data.map((val, id) => {
@@ -48,11 +67,23 @@ export default class Question extends Component {
             )
         })
         return (
+
             <React.Fragment>
+                {
+                    this.state.show ?
+                        <SweetAlert
+                            show={this.state.show}
+                            title="Alert"
+                            text={this.state.message}
+                            onConfirm={() => this.setState({ show: false })}
+                        /> :
+                        ''
+                }
                 <div className="container-fluid">
-                    <form onSubmit={(e)=>{e.preventDefault()}}>
+                    <form onSubmit={(e) => { e.preventDefault() }}>
                         <div className="form-group">
                             {questions}
+                            <div className="hooh">{this.state.message}</div>
                             <input type="text" className="form-control" name="answer" id="example" placeholder="Your Answer"
                                 onChange={(e) => {
                                     this.setState({

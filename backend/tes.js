@@ -23,58 +23,10 @@ const db = mysql.createConnection({
 db.connect(() => {
     console.log('Connect To Mysql')
 })
-app.get('/', (req, res) => {
-    res.send('<h1>Welcome To React Quiz API</h1>')
-})
 
-app.get('/crud', (req, res) => {
-    let sql = "select * from question"
-    db.query(sql, (err, result) => {
-        if (err) throw err
-        res.send(result)
-    })
-})
-app.post('/crud', (req, res) => {
-    let data = {
-        question: req.body.question,
-        answer: req.body.answer
-    }
-    let sql = "insert into question set ?"
-    db.query(sql, data, (err, result) => {
-        if (err) throw err
-        console.log(result)
-        res.send(result)
-    })
-})
 
-app.get('/crud/:id', (req, res) => {
 
-    let sql = `select * from question where id = '${req.params.id} '`
-    db.query(sql, (err, result) => {
-        if (err) throw err
-        res.send(result)
-    })
-})
-app.put('/crud/:id', (req, res) => {
-    let data = {
-        question: req.body.question,
-        answer: req.body.answer
-    }
-    let sql = `update question set ? where id = ?`
-    db.query(sql, [data, req.params.id], (err, result) => {
-        if (err) throw err
-        res.send(result)
-    })
-})
-app.delete('/crud/:id', (req, res) => {
-    let data = req.params.id
-    let sql = `DELETE from question where id = ?`
-    db.query(sql, data, (err, result) => {
-        if (err) throw err
-        console.log(result)
-        res.send(result)
-    })
-})
+
 app.post('/check', (req, res) => {
     let answer = req.body.answer
     db.query('select * from question where answer = ?', [answer], (err, result) => {
@@ -88,7 +40,7 @@ app.post('/check', (req, res) => {
                 if (result[0].answer === answer) {
                     res.send({
                         "code": 200,
-                        "succes": "Okay"
+                        "succes": "correct"
                     })
                 }
             } else {
@@ -101,7 +53,6 @@ app.post('/check', (req, res) => {
         }
     })
 })
-
 
 app.listen(3001, () => {
     console.log('Server Running On 3001')
