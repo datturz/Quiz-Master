@@ -13,3 +13,7 @@ in front-end just type `npm start`
 ####################################
 in backend just type `nodemon app.js`
 
+# for database 
+database name 'tescase'
+table name question field(id,question,answer,created_at)
+
